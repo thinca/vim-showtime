@@ -1,0 +1,128 @@
+*showtime.txt*	It's showtime!
+
+Version: 1.0
+Author : thinca <thinca+vim@gmail.com>
+License: zlib License
+
+==============================================================================
+CONTENTS					*showtime-contents*
+
+INTRODUCTION			|showtime-introduction|
+INTERFACE			|showtime-interface|
+  COMMANDS			  |showtime-commands|
+  FUNCTIONS			  |showtime-functions|
+  KEY MAPPINGS			  |showtime-key-mappings|
+CUSTOMIZING			|showtime-customizing|
+DATA STRUCTURE			|showtime-data-structure|
+CHANGELOG			|showtime-changelog|
+
+
+
+==============================================================================
+INTRODUCTION					*showtime-introduction*
+
+*showtime* is a Vim plugin to do presentation!
+
+Requirements:
+- Vim 7.3 or later
+
+Latest version:
+https://github.com/thinca/vim-showtime
+
+
+
+==============================================================================
+INTERFACE					*showtime-interface*
+
+------------------------------------------------------------------------------
+COMMANDS					*showtime-commands*
+
+:[page]ShowtimeStart [file]			*:ShowtimeStart*
+	Starts the presentation.  See |showtime-key-mappings| for operation.
+
+------------------------------------------------------------------------------
+FUNCTIONS					*showtime-functions*
+
+TODO:
+
+------------------------------------------------------------------------------
+KEY MAPPINGS					*showtime-key-mappings*
+
+<Plug>(showtime-next)				*<Plug>(showtime-next)*
+	Goes to next page.
+
+<Plug>(showtime-prev)				*<Plug>(showtime-prev)*
+	Goes to previous page.
+
+<Plug>(showtime-first)				*<Plug>(showtime-first)*
+	Goes to first page.
+
+<Plug>(showtime-last)				*<Plug>(showtime-last)*
+	Goes to last page.
+
+<Plug>(showtime-jump)				*<Plug>(showtime-jump)*
+	Goes to [count] page.
+
+<Plug>(showtime-quit)				*<Plug>(showtime-quit)*
+
+{lhs}			{rhs}
+--------		-----------------------------
+<Space>			<Plug>(showtime-next)
+<CR>			<Plug>(showtime-next)
+l			<Plug>(showtime-next)
+>			<Plug>(showtime-next)
+<BS>			<Plug>(showtime-prev)
+h			<Plug>(showtime-prev)
+<			<Plug>(showtime-prev)
+0			<Plug>(showtime-first)
+^			<Plug>(showtime-first)
+$			<Plug>(showtime-last)
+#			<Plug>(showtime-jump)
+go			<Plug>(showtime-jump)
+q			<Plug>(showtime-quit)
+
+
+==============================================================================
+CUSTOMIZING					*showtime-customizing*
+
+TODO:
+
+
+==============================================================================
+DATA STRUCTURE					*showtime-data-structure*
+
+(Scribble)
+
+data
+	title
+	author
+	presenter
+	date
+	font
+	fontwide
+	width
+	height
+	pages
+
+page
+	title
+	number
+	font
+	fontwide
+	width
+	height
+	body
+
+decorator
+
+
+
+==============================================================================
+CHANGELOG					*showtime-changelog*
+
+1.0	xxxx-xx-xx
+	- Initial version.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
