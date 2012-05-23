@@ -119,9 +119,28 @@ endfunction
 
 function! s:render(page)
   call s:clear()
-  call setline(1, a:page.title)
-  call setline(3, split(a:page.body, "\n"))
+  let width = winwidth(0)
+  call setline(1, s:line_centerize(a:page.title, width))
+  let lines = split(a:page.body, "\n")
+  call setline(3, s:block_centerize(lines, width))
   1
+endfunction
+
+function! s:line_centerize(line, width)
+  return s:centerize_padding(a:width, strwidth(a:line)) . a:line
+endfunction
+
+function! s:block_centerize(lines, width)
+  let left = s:centerize_padding(a:width, s:block_width(a:lines))
+  return map(a:lines, 'left . v:val')
+endfunction
+
+function! s:centerize_padding(max_width, body_width)
+  return repeat(' ', (a:max_width - a:body_width) / 2)
+endfunction
+
+function! s:block_width(lines)
+  return max(map(copy(a:lines), 'strwidth(v:val)'))
 endfunction
 
 function! s:validate(data)
