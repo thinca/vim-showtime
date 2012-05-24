@@ -41,9 +41,16 @@ function! s:make_buffer(data, page)
     let b:showtime.option_save.titlestring = &titlestring
     let &titlestring = a:data.title
   endif
+  if has_key(a:data, 'font')
+    let b:showtime.option_save.guifont = &guifont
+    let b:showtime.option_save.lines = &lines
+    let b:showtime.option_save.columns = &columns
+    let &guifont = a:data.font
+  endif
   setlocal buftype=nofile readonly
   setlocal nowrap nolist cmdheight=1 nocursorline nocursorcolumn
-  setlocal filetype=showtime
+  " :silent is needed to avoid hit-enter-prompt.
+  silent setlocal filetype=showtime
 
   nnoremap <silent> <buffer> <Plug>(showtime-next)
   \                 :<C-u>call showtime#action('next', v:count1)<CR>
