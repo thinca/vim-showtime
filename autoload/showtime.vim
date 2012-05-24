@@ -138,6 +138,7 @@ function! s:render(page)
   call setline(1, s:line_centerize(a:page.title, width))
   let lines = split(a:page.body, "\n")
   call setline(3, s:block_centerize(lines, width))
+  silent execute (winheight(0) + 1) . ',$ delete _'
   1
 endfunction
 
