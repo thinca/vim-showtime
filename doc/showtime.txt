@@ -63,6 +63,9 @@ KEY MAPPINGS					*showtime-key-mappings*
 <Plug>(showtime-jump)				*<Plug>(showtime-jump)*
 	Goes to [count] page.
 
+<Plug>(showtime-cursor)				*<Plug>(showtime-cursor)*
+	Toggles the cursor display.
+
 <Plug>(showtime-quit)				*<Plug>(showtime-quit)*
 
 {lhs}			{rhs}
@@ -79,6 +82,7 @@ h			<Plug>(showtime-prev)
 $			<Plug>(showtime-last)
 #			<Plug>(showtime-jump)
 go			<Plug>(showtime-jump)
+s			<Plug>(showtime-cursor)
 q			<Plug>(showtime-quit)
 
 

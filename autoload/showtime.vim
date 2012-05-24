@@ -53,6 +53,8 @@ function! s:make_buffer(data)
   \                 :<C-u>call showtime#action('jump', v:count)<CR>
   nnoremap <silent> <buffer> <Plug>(showtime-quit)
   \                 :<C-u>call showtime#action('quit')<CR>
+  nnoremap <silent> <buffer> <Plug>(showtime-cursor)
+  \                 :<C-u>call showtime#action('cursor')<CR>
 
   nmap <buffer> <Space> <Plug>(showtime-next)
   nmap <buffer> <CR> <Plug>(showtime-next)
@@ -67,6 +69,7 @@ function! s:make_buffer(data)
   nmap <buffer> # <Plug>(showtime-jump)
   nmap <buffer> go <Plug>(showtime-jump)
   nmap <buffer> q <Plug>(showtime-quit)
+  nmap <buffer> s <Plug>(showtime-cursor)
 
   command! -buffer ShowtimeEnd call showtime#action('quit')
   let b:showtime.cursor = s:hide_cursor()
@@ -97,8 +100,17 @@ function! s:action_quit(session)
   for [option, value] in items(a:session.option_save)
     execute 'let &' . option . ' = value'
   endfor
-  execute a:session.cursor
+  if has_key(a:session, 'cursor')
+    execute a:session.cursor
+  endif
   tabclose
+endfunction
+function! s:action_cursor(session)
+  if has_key(a:session, 'cursor')
+    execute remove(a:session, 'cursor')
+  else
+    let a:session.cursor = s:hide_cursor()
+  endif
 endfunction
 
 
