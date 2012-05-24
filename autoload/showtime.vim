@@ -26,6 +26,9 @@ endfunction
 
 function! s:make_buffer(data)
   tabnew `='[showtime]'`
+  augroup plugin-showtime
+    autocmd! TabLeave <buffer> ShowtimeEnd
+  augroup END
   let b:showtime = {}
   let b:showtime.data = a:data
   let b:showtime.option_save = {
