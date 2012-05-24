@@ -17,7 +17,17 @@ function! s:source.import(body)
     let [title, body] = matchlist(page, '\v^(.{-})%(\n|$)(.*)$')[1 : 2]
     let level = len(matchstr(page, '^#*'))
     let title = matchstr(title, '^#*\s*\zs.*')
-    if level == 1
+    if level == 0
+      " Temporary specs.
+      for attr in split(page, "\n")
+        let [name, value] = matchlist(attr, '^\(\w*\)\s*\(.*\)$')[1 : 2]
+        if name !=# ''
+          let data[name] = value
+        endif
+      endfor
+      continue
+    endif
+    if level == 1 && !has_key(data, 'title')
       let data.title = title
     endif
     " TODO: parse body
