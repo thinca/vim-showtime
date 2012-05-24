@@ -19,14 +19,12 @@ function! s:source.import(body)
     let title = matchstr(title, '^#*\s*\zs.*')
     if level == 1
       let data.title = title
-      " TODO: parse body
-    else
-      " TODO: parse body
-      let data.pages += [{
-      \   'title': title,
-      \   'body': body,
-      \ }]
     endif
+    " TODO: parse body
+    let data.pages += [{
+    \   'title': title,
+    \   'body': body,
+    \ }]
   endfor
   return data
 endfunction
