@@ -11,10 +11,11 @@ function! showtime#start(...)
   if !filereadable(file)
     throw "showtime: File can't read: " . file
   endif
+  let page = 2 <= a:0 ? a:2 : 1
   let source = showtime#source#markdown#load()
   let data = source.import(join(readfile(file), "\n"))
   call s:validate(data)
-  call s:make_buffer(data)
+  call s:make_buffer(data, page)
 endfunction
 
 function! showtime#action(action, ...)
@@ -24,7 +25,7 @@ function! showtime#action(action, ...)
   return call('s:action_' . a:action, [b:showtime] + a:000)
 endfunction
 
-function! s:make_buffer(data)
+function! s:make_buffer(data, page)
   tabnew `='[showtime]'`
   augroup plugin-showtime
     autocmd! TabLeave <buffer> ShowtimeEnd
@@ -76,7 +77,7 @@ function! s:make_buffer(data)
 
   command! -buffer ShowtimeEnd call showtime#action('quit')
   let b:showtime.cursor = s:hide_cursor()
-  call s:action_jump(b:showtime, 1)
+  call s:action_jump(b:showtime, a:page)
 endfunction
 
 function! s:action_next(session, count)
