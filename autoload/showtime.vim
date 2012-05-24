@@ -148,6 +148,7 @@ function! s:render(page)
   call setline(3, s:block_centerize(lines, width))
   silent execute (winheight(0) + 1) . ',$ delete _'
   1
+  redraw
 endfunction
 
 function! s:line_centerize(line, width)
