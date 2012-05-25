@@ -37,15 +37,13 @@ function! s:make_buffer(data, page)
   \   'showtabline': &showtabline,
   \   'laststatus': &laststatus,
   \   'showcmd': &showcmd,
+  \   'titlestring': &titlestring,
+  \   'guifont': &guifont,
+  \   'lines': &lines,
+  \   'columns': &columns,
   \ }
   set laststatus=0 showtabline=0 noshowcmd
-  if has_key(a:data, 'title')
-    let b:showtime.option_save.titlestring = &titlestring
-  endif
   if has_key(a:data, 'font')
-    let b:showtime.option_save.guifont = &guifont
-    let b:showtime.option_save.lines = &lines
-    let b:showtime.option_save.columns = &columns
     let &guifont = a:data.font
   endif
   setlocal buftype=nofile readonly
@@ -113,7 +111,10 @@ function! s:action_jump(session, page)
 endfunction
 function! s:action_quit(session)
   for [option, value] in items(a:session.option_save)
-    execute 'let &' . option . ' = value'
+    let optname = '&' . option
+    if eval(optname) isnot value
+      execute 'let' optname '= value'
+    endif
   endfor
   if has_key(a:session, 'cursor')
     execute a:session.cursor
