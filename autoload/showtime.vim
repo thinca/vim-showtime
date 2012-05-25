@@ -27,6 +27,7 @@ endfunction
 
 function! s:make_buffer(data, page)
   tabnew `='[showtime]'`
+  silent execute 'tabmove' (tabpagenr() - 2)
   augroup plugin-showtime
     autocmd! TabLeave <buffer> ShowtimeEnd
   augroup END
