@@ -40,7 +40,6 @@ function! s:make_buffer(data, page)
   set laststatus=0 showtabline=0
   if has_key(a:data, 'title')
     let b:showtime.option_save.titlestring = &titlestring
-    let &titlestring = a:data.title
   endif
   if has_key(a:data, 'font')
     let b:showtime.option_save.guifont = &guifont
@@ -106,6 +105,9 @@ function! s:action_jump(session, page)
   let page = a:page <= 0 ? 1 :
   \          last < a:page ? last : a:page
   call s:render(data.pages[page - 1])
+  if has_key(data, 'title')
+    let &titlestring = printf('%s [%d/%d]', data.title, page, last)
+  endif
   let a:session.current_page = page
 endfunction
 function! s:action_quit(session)
