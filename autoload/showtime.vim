@@ -36,8 +36,9 @@ function! s:make_buffer(data, page)
   let b:showtime.option_save = {
   \   'showtabline': &showtabline,
   \   'laststatus': &laststatus,
+  \   'showcmd': &showcmd,
   \ }
-  set laststatus=0 showtabline=0
+  set laststatus=0 showtabline=0 noshowcmd
   if has_key(a:data, 'title')
     let b:showtime.option_save.titlestring = &titlestring
   endif
