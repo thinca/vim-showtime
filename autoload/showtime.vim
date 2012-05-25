@@ -130,10 +130,9 @@ function! s:hide_cursor()
   redir => cursor
   silent! hi Cursor
   redir END
-  let cursor = 'highlight Cursor ' .
-  \            substitute(matchstr(cursor, 'xxx\zs.*'), "\n", ' ', 'g')
   highlight Cursor ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
-  return cursor
+  return 'highlight Cursor ' .
+  \      substitute(matchstr(cursor, 'xxx\zs.*'), "\n", ' ', 'g')
 endfunction
 
 function! s:clear()
