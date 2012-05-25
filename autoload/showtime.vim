@@ -33,15 +33,14 @@ function! s:make_buffer(data, page)
   augroup END
   let b:showtime = {}
   let b:showtime.data = a:data
-  let b:showtime.option_save = {
-  \   'showtabline': &showtabline,
-  \   'laststatus': &laststatus,
-  \   'showcmd': &showcmd,
-  \   'titlestring': &titlestring,
-  \   'guifont': &guifont,
-  \   'lines': &lines,
-  \   'columns': &columns,
-  \ }
+  let b:showtime.option_save = {}
+  for option in [
+  \   'showtabline', 'laststatus',
+  \   'showcmd', 'titlestring',
+  \   'guifont', 'lines', 'columns',
+  \ ]
+    let b:showtime.option_save[option] = eval('&' . option)
+  endfor
   set laststatus=0 showtabline=0 noshowcmd
   if has_key(a:data, 'font')
     let &guifont = a:data.font
