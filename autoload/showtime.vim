@@ -147,12 +147,18 @@ endfunction
 function! s:render(page)
   call s:clear()
   let width = winwidth(0)
-  call setline(1, s:line_centerize(a:page.title, width))
-  let lines = split(a:page.body, "\n")
-  call setline(3, s:block_centerize(lines, width))
-  let bottom = len(lines) + 2
-  if bottom < winheight(0)
-    silent execute (winheight(0) + 1) . ',$ delete _'
+  let height = winheight(0)
+  if a:page.body =~# '\S'
+    call setline(1, s:line_centerize(a:page.title, width))
+    let lines = split(a:page.body, "\n")
+    call setline(3, s:block_centerize(lines, width))
+    let bottom = len(lines) + 2
+  else
+    call setline(height / 2, s:line_centerize(a:page.title, width))
+    let bottom = height + 1
+  endif
+  if bottom < height
+    silent execute (height + 1) . ',$ delete _'
   endif
   1
   redraw
