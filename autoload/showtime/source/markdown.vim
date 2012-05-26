@@ -27,13 +27,16 @@ function! s:source.import(body)
       endfor
       continue
     endif
+    let layout = body =~# '\S' ? 'page' : 'title'
     if level == 1 && !has_key(data, 'title')
       let data.title = title
+      let layout = 'title'
     endif
     " TODO: parse body
     let data.pages += [{
     \   'title': title,
     \   'body': body,
+    \   'layout': layout,
     \ }]
   endfor
   return data

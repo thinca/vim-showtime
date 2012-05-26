@@ -148,14 +148,15 @@ function! s:render(page)
   call s:clear()
   let width = winwidth(0)
   let height = winheight(0)
-  if a:page.body =~# '\S'
+  let lines = split(a:page.body, "\n")
+  if a:page.layout ==# 'page'
     call setline(1, s:line_centerize(a:page.title, width))
-    let lines = split(a:page.body, "\n")
     call setline(3, s:block_centerize(lines, width))
     let bottom = len(lines) + 2
-  else
+  elseif a:page.layout ==# 'title'
     call setline(height / 2, s:line_centerize(a:page.title, width))
-    let bottom = height + 1
+    call setline(height / 2 + 2, s:block_centerize(lines, width))
+    let bottom = height / 2 + len(lines) + 1
   endif
   if bottom < height
     silent execute (height + 1) . ',$ delete _'
