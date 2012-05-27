@@ -22,6 +22,7 @@ CHANGELOG			|showtime-changelog|
 INTRODUCTION					*showtime-introduction*
 
 *showtime* is a Vim plugin to do presentation!
+NOTE: This plugin is development version yet.
 
 Requirements:
 - Vim 7.3 or later
@@ -124,8 +125,8 @@ decorator
 ==============================================================================
 CHANGELOG					*showtime-changelog*
 
-1.0	xxxx-xx-xx
-	- Initial version.
+1.0	2012-05-27
+	- Development version.
 
 
 ==============================================================================
