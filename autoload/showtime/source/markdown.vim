@@ -49,14 +49,13 @@ function! s:parse_body(body)
   while body !=# ''
     if body =~# '^```'
       let [seg, body] = s:parse_code_block(body)
-      let segments += [seg]
     elseif body =~# '^\%(    \|\t\)'
       let [seg, body] = s:parse_block(body)
-      let segments += [seg]
     else
-      let [str, body] = matchlist(body, '\v^(.{-})%(\n\s*\n(.*)|$)')[1 : 2]
-      let segments += [str]
+      let [seg, body] = matchlist(body, '\v^(.{-})%(\n\s*\n(.*)|$)')[1 : 2]
     endif
+    let segments += [seg]
+    unlet seg
   endwhile
   return segments
 endfunction
