@@ -65,6 +65,8 @@ function! s:make_buffer(data, page)
   \                 :<C-u>call showtime#action('quit')<CR>
   nnoremap <silent> <buffer> <Plug>(showtime-cursor)
   \                 :<C-u>call showtime#action('cursor')<CR>
+  nnoremap <silent> <buffer> <Plug>(showtime-redraw)
+  \                 :<C-u>call showtime#action('redraw')<CR>
 
   nmap <buffer> <Space> <Plug>(showtime-next)
   nmap <buffer> <CR> <Plug>(showtime-next)
@@ -80,6 +82,7 @@ function! s:make_buffer(data, page)
   nmap <buffer> go <Plug>(showtime-jump)
   nmap <buffer> q <Plug>(showtime-quit)
   nmap <buffer> s <Plug>(showtime-cursor)
+  nmap <buffer> <C-l> <Plug>(showtime-redraw)
 
   command! -buffer ShowtimeEnd call showtime#action('quit')
   let b:showtime.cursor = s:hide_cursor()
@@ -127,6 +130,9 @@ function! s:action_cursor(session)
   else
     let a:session.cursor = s:hide_cursor()
   endif
+endfunction
+function! s:action_redraw(session)
+  return s:action_jump(a:session, a:session.current_page)
 endfunction
 
 

@@ -67,6 +67,9 @@ KEY MAPPINGS					*showtime-key-mappings*
 <Plug>(showtime-cursor)				*<Plug>(showtime-cursor)*
 	Toggles the cursor display.
 
+<Plug>(showtime-redraw)				*<Plug>(showtime-redraw)*
+	Redraws the current page.
+
 <Plug>(showtime-quit)				*<Plug>(showtime-quit)*
 
 {lhs}			{rhs}
@@ -84,6 +87,7 @@ $			<Plug>(showtime-last)
 #			<Plug>(showtime-jump)
 go			<Plug>(showtime-jump)
 s			<Plug>(showtime-cursor)
+<C-l>			<Plug>(showtime-redraw)
 q			<Plug>(showtime-quit)
 
 
