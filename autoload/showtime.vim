@@ -33,14 +33,7 @@ function! s:make_buffer(data, page)
   augroup END
   let b:showtime = {}
   let b:showtime.data = a:data
-  let b:showtime.option_save = {}
-  for option in [
-  \   'showtabline', 'laststatus',
-  \   'showcmd', 'titlestring',
-  \   'guifont', 'lines', 'columns',
-  \ ]
-    let b:showtime.option_save[option] = eval('&' . option)
-  endfor
+  let b:showtime.saved_state = s:save_state()
   set laststatus=0 showtabline=0 noshowcmd
   if has_key(a:data, 'font')
     let &guifont = a:data.font
@@ -51,7 +44,7 @@ function! s:make_buffer(data, page)
   " :silent is needed to avoid hit-enter-prompt.
   silent setlocal filetype=showtime
 
-  let b:showtime.cursor = s:hide_cursor()
+  call s:hide_cursor()
   call s:action_jump(b:showtime, a:page)
 endfunction
 
@@ -79,15 +72,7 @@ function! s:action_jump(session, page)
   let a:session.current_page = page
 endfunction
 function! s:action_quit(session)
-  for [option, value] in items(a:session.option_save)
-    let optname = '&' . option
-    if eval(optname) isnot value
-      execute 'let' optname '= value'
-    endif
-  endfor
-  if has_key(a:session, 'cursor')
-    execute a:session.cursor
-  endif
+  call s:restore_state(a:session.saved_state)
   tabclose
 endfunction
 function! s:action_cursor(session)
@@ -101,14 +86,42 @@ function! s:action_redraw(session)
   return s:action_jump(a:session, a:session.current_page)
 endfunction
 
+function! s:save_state()
+  let options = {}
+  for option in [
+  \   'showtabline', 'laststatus',
+  \   'showcmd', 'titlestring',
+  \   'guifont', 'lines', 'columns',
+  \ ]
+    let options[option] = eval('&' . option)
+  endfor
+  return {
+  \   'options': options,
+  \   'cursor': s:current_cursor(),
+  \ }
+endfunction
+function! s:restore_state(state)
+  for [option, value] in items(a:state.options)
+    let optname = '&' . option
+    if eval(optname) isnot value
+      execute 'let' optname '= value'
+    endif
+  endfor
+  if has_key(a:state, 'cursor')
+    execute a:state.cursor
+  endif
+endfunction
 
-function! s:hide_cursor()
+
+function! s:current_cursor()
   redir => cursor
   silent! hi Cursor
   redir END
-  highlight Cursor ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
   return 'highlight Cursor ' .
   \      substitute(matchstr(cursor, 'xxx\zs.*'), "\n", ' ', 'g')
+endfunction
+function! s:hide_cursor()
+  highlight Cursor ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 endfunction
 
 function! s:clear()
