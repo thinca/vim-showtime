@@ -45,6 +45,9 @@ function! s:make_buffer(data, page)
   silent setlocal filetype=showtime
 
   call s:hide_cursor()
+  if get(a:data, 'colorscheme', '') !=# ''
+    execute 'colorscheme' a:data.colorscheme
+  endif
   call s:action_jump(b:showtime, a:page)
 endfunction
 
@@ -98,6 +101,7 @@ function! s:save_state()
   return {
   \   'options': options,
   \   'cursor': s:current_cursor(),
+  \   'colorscheme': g:colors_name,
   \ }
 endfunction
 function! s:restore_state(state)
@@ -109,6 +113,9 @@ function! s:restore_state(state)
   endfor
   if has_key(a:state, 'cursor')
     execute a:state.cursor
+  endif
+  if has_key(a:state, 'colorscheme') && a:state.colorscheme !=# g:colors_name
+    execute 'colorscheme' a:state.colorscheme
   endif
 endfunction
 

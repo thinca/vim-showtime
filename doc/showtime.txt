@@ -111,6 +111,7 @@ data
 	date
 	font
 	fontwide
+	colorscheme
 	width
 	height
 	pages
