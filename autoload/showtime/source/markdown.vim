@@ -13,36 +13,47 @@ let s:source = {
 function! s:source.import(body)
   let pages = split(a:body, '\%(^\|\n\+\)\ze#\+\s*')
   let data = {'pages': []}
-  for page in pages
-    let [title, body] = matchlist(page, '\v^(.{-})%(\n|$)\n*(.*)$')[1 : 2]
-    let level = len(matchstr(page, '^#*'))
-    let title = matchstr(title, '^#*\s*\zs.*')
-    if level == 0
-      " Temporary specs.
-      for attr in split(page, "\n")
-        let [name, value] = matchlist(attr, '^\(\w*\)\s*\(.*\)$')[1 : 2]
-        if name !=# ''
-          let data[name] = value
-        endif
-      endfor
-      continue
+  if !empty(pages) && pages[0] !~# '^#'
+    let header = remove(pages, 0)
+    call extend(data, s:parse_header(header), 'keep')
+  endif
+  for page_data in pages
+    let page = s:parse_page(page_data)
+    if !has_key(data, 'title') && has_key(page, 'title')
+      let data.title = page.title
     endif
-    let layout = body =~# '\S' ? 'page' : 'title'
-    if level == 1 && !has_key(data, 'title')
-      let data.title = title
-      let layout = 'title'
-    endif
-    " TODO: parse body
-    let data.pages += [{
-    \   'title': title,
-    \   'body': body,
-    \   'layout': layout,
-    \   'segments': s:parse_body(body),
-    \ }]
+    let data.pages += [page]
   endfor
   return data
 endfunction
 
+function! s:parse_header(header)
+  " Temporary specs.
+  let data = {}
+  for attr in split(a:header, "\n")
+    let [name, value] = matchlist(attr, '^\(\w*\)\s*\(.*\)$')[1 : 2]
+    if name !=# ''
+      let data[name] = value
+    endif
+  endfor
+  return data
+endfunction
+function! s:parse_page(page)
+  let [title, body] = matchlist(a:page, '\v^(.{-})%(\n|$)\n*(.*)$')[1 : 2]
+  let level = len(matchstr(a:page, '^#*'))
+  let title = matchstr(title, '^#*\s*\zs.*')
+  let layout = body =~# '\S' ? 'page' : 'title'
+  if level == 1
+    let layout = 'title'
+  endif
+  " TODO: parse body
+  return {
+  \   'title': title,
+  \   'body': body,
+  \   'layout': layout,
+  \   'segments': s:parse_body(body),
+  \ }
+endfunction
 function! s:parse_body(body)
   let segments = []
   let body = a:body
