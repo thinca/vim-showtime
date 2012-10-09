@@ -42,7 +42,9 @@ function! s:parse_page(page)
   let [title, body] = matchlist(a:page, '\v^(.{-})%(\n|$)\n*(.*)$')[1 : 2]
   let level = len(matchstr(a:page, '^#*'))
   let title = matchstr(title, '^#*\s*\zs.*')
-  let layout = body =~# '\S' ? 'page' : 'title'
+  let layout = title ==# '' ? 'body':
+  \            body  ==# '' ? 'title':
+  \                           'page'
   if level == 1
     let layout = 'title'
   endif

@@ -134,7 +134,12 @@ function! s:render(page)
   syntax clear
   let width = winwidth(0)
   let height = winheight(0)
-  if a:page.layout ==# 'page'
+  if a:page.layout ==# 'body'
+    let lines = s:render_segment(a:page.segments, {'line': 1})
+    let line = s:height_middlize(height, len(lines))
+    call setline(line, s:block_centerize(lines, width))
+    let bottom = line + len(lines)
+  elseif a:page.layout ==# 'page'
     call setline(1, s:line_centerize(a:page.title, width))
     let lines = s:render_segment(a:page.segments, {'line': 3})
     call setline(3, s:block_centerize(lines, width))
@@ -151,6 +156,10 @@ function! s:render(page)
   endif
   1
   redraw
+endfunction
+
+function! s:height_middlize(max_height, body_height)
+  return (a:max_height - a:body_height) / 2
 endfunction
 
 function! s:line_centerize(line, width)
