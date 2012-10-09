@@ -49,6 +49,8 @@ TODO:
 ------------------------------------------------------------------------------
 KEY MAPPINGS					*showtime-key-mappings*
 
+All keymappings can use only at presentation buffer.
+
 <Plug>(showtime-next)				*<Plug>(showtime-next)*
 	Goes to next page.
 
