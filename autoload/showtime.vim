@@ -44,10 +44,10 @@ function! s:make_buffer(data, page)
   " :silent is needed to avoid hit-enter-prompt.
   silent setlocal filetype=showtime
 
-  call s:hide_cursor()
   if get(a:data, 'colorscheme', '') !=# ''
     execute 'colorscheme' a:data.colorscheme
   endif
+  call s:hide_cursor()
   call s:action_jump(b:showtime, a:page)
 endfunction
 
