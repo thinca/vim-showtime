@@ -31,7 +31,7 @@ function! s:parse_header(header)
   " Temporary specs.
   let data = {}
   for attr in split(a:header, "\n")
-    let [name, value] = matchlist(attr, '^\(\w*\)\s*\(.*\)$')[1 : 2]
+    let [name, value] = matchlist(attr, '^\s*\(\w*\)\s*\(.*\)$')[1 : 2]
     if name !=# ''
       let data[name] = value
     endif
