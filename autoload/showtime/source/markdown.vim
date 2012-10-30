@@ -10,71 +10,75 @@ let s:source = {
 \   'accept': ['.md', '.mkd', '.markdown'],
 \ }
 
-function! s:source.import(body)
-  let pages = split(a:body, '\%(^\|\n\+\)\ze#\+\s*')
+function! s:source.import(content)
   let data = {'pages': []}
-  if !empty(pages) && pages[0] !~# '^#'
-    let header = remove(pages, 0)
-    call extend(data, s:parse_header(header), 'keep')
-  endif
-  for page_data in pages
-    let page = s:parse_page(page_data)
+  let [header, rest] = s:parse_header(a:content)
+  call extend(data, header, 'keep')
+  while !empty(rest)
+    let [page, rest] = s:parse_page(rest)
     if !has_key(data, 'title') && has_key(page, 'title')
       let data.title = page.title
     endif
     let data.pages += [page]
-  endfor
+  endwhile
   return data
 endfunction
 
-function! s:parse_header(header)
+function! s:parse_header(input)
   " Temporary specs.
   let data = {}
-  for attr in split(a:header, "\n")
+  let [header, rest] = matchlist(a:input, '^\(.\{-}\)\n\(#.*\)\?$')[1 : 2]
+  for attr in split(header, "\n")
     let [name, value] = matchlist(attr, '^\s*\(\w*\)\s*\(.*\)$')[1 : 2]
     if name !=# ''
       let data[name] = value
     endif
   endfor
-  return data
+  return [data, rest]
 endfunction
-function! s:parse_page(page)
-  let [title, body] = matchlist(a:page, '\v^(.{-})%(\n|$)\n*(.*)$')[1 : 2]
-  let level = len(matchstr(a:page, '^#*'))
-  let title = matchstr(title, '^#*\s*\zs.*')
-  let layout = title ==# '' ? 'body':
-  \            body  ==# '' ? 'title':
-  \                           'page'
-  if level == 1
-    let layout = 'title'
-  endif
-  " TODO: parse body
-  return {
+function! s:parse_page(input)
+  let [level, title, rest] = s:parse_title(a:input)
+  let [segments, rest] = s:parse_body(rest)
+  let layout = level ==  1     ? 'title':
+  \            title ==# ''    ? 'body':
+  \            empty(segments) ? 'title':
+  \                              'page'
+  return [{
   \   'title': title,
-  \   'body': body,
   \   'layout': layout,
-  \   'segments': s:parse_body(body),
-  \ }
+  \   'segments': segments,
+  \ }, rest]
 endfunction
-function! s:parse_body(body)
+function! s:parse_title(input)
+  let br = "[^\r\n]"
+  let pat = '^\(#\+\s*' . br . '*\)\n\?\(.*\)$'
+  let [title, rest] = matchlist(a:input, pat)[1 : 2]
+  let level = len(matchstr(title, '^#*'))
+  let title = matchstr(title, '^#*\s*\zs.\{-}\ze\s*$')
+  return [level, title, rest]
+endfunction
+function! s:parse_body(input)
   let segments = []
-  let body = a:body
-  while body !=# ''
-    if body =~# '^```'
-      let [seg, body] = s:parse_code_block(body)
-    elseif body =~# '^\%(    \|\t\)'
-      let [seg, body] = s:parse_block(body)
+  let rest = a:input
+  while rest !=# ''
+    if rest =~# '^\_s*#'
+      let rest = matchstr(rest, '^\_s*\zs.*')
+      break
+    elseif rest =~# '^```'
+      let [seg, rest] = s:parse_code_block(rest)
+    elseif rest =~# '^\%(    \|\t\)'
+      let [seg, rest] = s:parse_block(rest)
     else
-      let [seg, body] = matchlist(body, '\v^(.{-})%(\n\s*\n(.*)|$)')[1 : 2]
+      let [seg, rest] = matchlist(rest, '\v^(.{-})\n(%(\s*\n|\s*#).*)')[1 : 2]
     endif
     let segments += [seg]
     unlet seg
   endwhile
-  return segments
+  return [segments, rest]
 endfunction
-function! s:parse_code_block(body)
+function! s:parse_code_block(input)
   let [filetype, code, body] =
-  \   matchlist(a:body, '\v^```\s*(\w*)\s*\n(.{-})\n```%(\n(.*))?')[1 : 3]
+  \   matchlist(a:input, '\v^```\s*(\w*)\s*\n(.{-})\n```%(\n(.*))?')[1 : 3]
   return [{
   \   'decorator': 'code',
   \   'content': code,
@@ -83,9 +87,9 @@ function! s:parse_code_block(body)
   \   },
   \ }, body]
 endfunction
-function! s:parse_block(body)
+function! s:parse_block(input)
   let block = ''
-  let body = a:body
+  let body = a:input
   while body =~# '\v^%( {,4}\n|    |\t)'
     let [b, body] = matchlist(body, '\v^(.{-}%(\n|$))(.*)')[1 : 2]
     let block .= matchstr(b, '\v^%(\t| {,4})\zs.*')
