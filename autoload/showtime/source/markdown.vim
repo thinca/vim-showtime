@@ -69,7 +69,8 @@ function! s:parse_body(input)
     elseif rest =~# '^\%(    \|\t\)'
       let [seg, rest] = s:parse_block(rest)
     else
-      let [seg, rest] = matchlist(rest, '\v^(.{-})\n(%(\s*\n|\s*#).*)')[1 : 2]
+      let seg = matchstr(rest, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
+      let rest = matchstr(rest[len(seg) :], '^\n*\zs.*')
     endif
     let segments += [seg]
     unlet seg
