@@ -51,7 +51,7 @@ function! s:parse_page(input)
 endfunction
 function! s:parse_title(input)
   let br = "[^\r\n]"
-  let pat = '^\(#\+\s*' . br . '*\)\n\?\(.*\)$'
+  let pat = '^\(#\+\s*' . br . '*\)\n\+\(.*\)$'
   let [title, rest] = matchlist(a:input, pat)[1 : 2]
   let level = len(matchstr(title, '^#*'))
   let title = matchstr(title, '^#*\s*\zs.\{-}\ze\s*$')
