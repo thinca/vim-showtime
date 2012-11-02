@@ -8,14 +8,18 @@ set cpo&vim
 
 function! showtime#start(...)
   let file = a:0 && a:1 =~# '\S' ? a:1 : expand('%:p')
-  if !filereadable(file)
-    throw "showtime: File can't read: " . file
-  endif
-  let page = 2 <= a:0 ? a:2 : 1
-  let source = showtime#source#markdown#load()
-  let data = source.import(join(readfile(file), "\n"))
+  let data = showtime#load(file)
   call s:validate(data)
+  let page = 2 <= a:0 ? a:2 : 1
   call s:make_buffer(data, page)
+endfunction
+
+function! showtime#load(file)
+  if !filereadable(a:file)
+    throw "showtime: File can't read: " . a:file
+  endif
+  let source = showtime#source#markdown#load()
+  return source.import(join(readfile(a:file), "\n"))
 endfunction
 
 function! showtime#action(action, ...)
