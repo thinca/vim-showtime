@@ -71,6 +71,7 @@ function! s:parse_body(input)
     else
       let seg = matchstr(rest, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
       let rest = matchstr(rest[len(seg) :], '^\n*\zs.*')
+      let seg = substitute(seg, '`\(.*\)`', '\1', 'g')
     endif
     let segments += [seg]
     unlet seg
