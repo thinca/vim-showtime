@@ -61,7 +61,7 @@ function! s:parse_body(input)
   let segments = []
   let rest = a:input
   while rest !=# ''
-    if rest =~# '^\_s*#'
+    if rest =~# '^#'
       let rest = matchstr(rest, '^\_s*\zs.*')
       break
     elseif rest =~# '^```'
