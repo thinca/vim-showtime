@@ -69,9 +69,7 @@ function! s:parse_body(input)
     elseif rest =~# '^\%(    \|\t\)'
       let [seg, rest] = s:parse_block(rest)
     else
-      let seg = matchstr(rest, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
-      let rest = matchstr(rest[len(seg) :], '^\n*\zs.*')
-      let seg = substitute(seg, '`\(.\{-}\)`', '\1', 'g')
+      let [seg, rest] = s:parse_text(rest)
     endif
     let segments += [seg]
     unlet seg
@@ -100,6 +98,12 @@ function! s:parse_block(input)
   \   'decorator': 'block',
   \   'content': matchstr(block, '^.\{-}\ze\n*$'),
   \ }, body]
+endfunction
+function! s:parse_text(input)
+  let seg = matchstr(a:input, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
+  let rest = matchstr(a:input[len(seg) :], '^\n*\zs.*')
+  let seg = substitute(seg, '`\(.\{-}\)`', '\1', 'g')
+  return [seg, rest]
 endfunction
 
 function! showtime#source#markdown#load()
