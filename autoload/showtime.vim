@@ -83,10 +83,15 @@ function! s:action_quit(session)
   tabclose
 endfunction
 function! s:action_cursor(session)
-  if has_key(a:session, 'cursor')
-    execute remove(a:session, 'cursor')
+  if !has_key(a:session, 'saved_state')
+    return
+  endif
+  let state = a:session.saved_state
+  if has_key(state, 'cursor')
+    execute remove(state, 'cursor')
   else
-    let a:session.cursor = s:hide_cursor()
+    let state.cursor = s:current_cursor()
+    call s:hide_cursor()
   endif
 endfunction
 function! s:action_redraw(session)
@@ -126,8 +131,11 @@ endfunction
 
 function! s:current_cursor()
   redir => cursor
-  silent! hi Cursor
+  silent! highlight Cursor
   redir END
+  if cursor !~# 'xxx'
+    return ''
+  endif
   return 'highlight Cursor ' .
   \      substitute(matchstr(cursor, 'xxx\zs.*'), "\n", ' ', 'g')
 endfunction
