@@ -14,12 +14,21 @@ function! showtime#start(...)
   call s:make_buffer(data, page)
 endfunction
 
+function! showtime#resume()
+  if !exists('s:resume_info')
+    throw 'showtime: No resume info'
+  endif
+  call showtime#start(s:resume_info.filename, s:resume_info.page)
+endfunction
+
 function! showtime#load(file)
   if !filereadable(a:file)
     throw "showtime: File can't read: " . a:file
   endif
   let source = showtime#source#markdown#load()
-  return source.import(join(readfile(a:file), "\n"))
+  let data = source.import(join(readfile(a:file), "\n"))
+  let data.filename = a:file
+  return data
 endfunction
 
 function! showtime#action(action, ...)
@@ -80,6 +89,10 @@ function! s:action_jump(session, page)
 endfunction
 function! s:action_quit(session)
   call s:restore_state(a:session.saved_state)
+  let s:resume_info = {
+  \   'filename': a:session.data.filename,
+  \   'page': a:session.current_page,
+  \ }
   tabclose
 endfunction
 function! s:action_cursor(session)
