@@ -1,6 +1,6 @@
 *showtime.txt*	It's showtime!
 
-Version: 1.0
+Version: 1.1
 Author : thinca <thinca+vim@gmail.com>
 License: zlib License
 
@@ -135,6 +135,12 @@ decorator
 
 ==============================================================================
 CHANGELOG					*showtime-changelog*
+
+1.1	2014-10-17
+	- Add resume feature(|:ShowtimeResume|).
+	- Add |<Plug>(showtime-redraw)|.
+	- Fix and improve markdown parser.
+	- Fix various bugs.
 
 1.0	2012-05-27
 	- Development version.
