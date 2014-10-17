@@ -41,6 +41,10 @@ COMMANDS					*showtime-commands*
 :[page]ShowtimeStart [file]			*:ShowtimeStart*
 	Starts the presentation.  See |showtime-key-mappings| for operation.
 
+:ShowtimeResume					*:ShowtimeResume*
+	Resumes the previous presentation.
+	Starts at the last shown page.
+
 ------------------------------------------------------------------------------
 FUNCTIONS					*showtime-functions*
 
