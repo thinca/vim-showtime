@@ -52,7 +52,7 @@ function! s:make_buffer(data, page)
     let &guifont = a:data.font
   endif
   setlocal buftype=nofile readonly
-  setlocal nonumber wrap nolist cmdheight=1
+  setlocal nonumber norelativenumber wrap nolist cmdheight=1
   setlocal nocursorline nocursorcolumn colorcolumn=
   " :silent is needed to avoid hit-enter-prompt.
   silent setlocal filetype=showtime
