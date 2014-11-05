@@ -26,19 +26,14 @@ endfunction
 
 function! s:parse_header(input)
   " Temporary specs.
+  let rest = substitute(a:input, '^\s*', '', '')
   let data = {}
-  let [header, rest] = matchlist(a:input, '^\(.\{-}\)\n\(#.*\)\?$')[1 : 2]
-  for attr in split(header, "\n")
-    let [name, value] = matchlist(attr, '^\s*\(\w*\)\s*\(.*\)$')[1 : 2]
-    if name !=# ''
-      let data[name] = value
-    endif
-  endfor
-  return [data, rest]
+  let rest = s:parse_metadata(rest, data)
+  return [data, matchstr(rest, '^\_s*\zs.*')]
 endfunction
 function! s:parse_page(input)
   let [level, title, rest] = s:parse_title(a:input)
-  let [segments, rest] = s:parse_body(rest)
+  let [segments, rest, meta] = s:parse_body(rest)
   let layout = level ==  1     ? 'title':
   \            title ==# ''    ? 'body':
   \            empty(segments) ? 'title':
@@ -46,6 +41,7 @@ function! s:parse_page(input)
   return [{
   \   'title': title,
   \   'layout': layout,
+  \   'meta': meta,
   \   'segments': segments,
   \ }, rest]
 endfunction
@@ -64,10 +60,14 @@ endfunction
 function! s:parse_body(input)
   let segments = []
   let rest = a:input
+  let meta = {}
   while rest !=# ''
     if rest =~# '^#'
       let rest = matchstr(rest, '^\_s*\zs.*')
       break
+    elseif rest =~# '^<!--!'
+      let rest = s:parse_metadata(rest, meta)
+      continue
     elseif rest =~# '^```'
       let [seg, rest] = s:parse_code_block(rest)
     elseif rest =~# '^\%(    \|\t\)'
@@ -78,7 +78,17 @@ function! s:parse_body(input)
     let segments += [seg]
     unlet seg
   endwhile
-  return [segments, rest]
+  return [segments, rest, meta]
+endfunction
+function! s:parse_metadata(input, meta)
+  let matched = matchlist(a:input, '^<!--!\(.\{-}\)\n\s*-->\s*\(.*\)')
+  if empty(matched)
+    return a:input
+  endif
+  let [data, rest] = matched[1 : 2]
+  sandbox let meta = eval(substitute(data, "\n", '', 'g'))
+  call extend(a:meta, meta)
+  return rest
 endfunction
 function! s:parse_code_block(input)
   let [filetype, code, body] =
