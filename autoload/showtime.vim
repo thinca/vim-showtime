@@ -81,6 +81,7 @@ function! s:action_jump(session, page)
   if cs !=# '' && cs !=# get(a:session, 'current_colorscheme', '')
     execute 'colorscheme' cs
     let a:session.current_colorscheme = cs
+    call s:hide_cursor()
   endif
 
   let font = get(page.meta, 'font', get(data, 'font', ''))
