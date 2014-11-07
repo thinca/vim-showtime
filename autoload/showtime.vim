@@ -48,9 +48,6 @@ function! s:make_buffer(data, page)
   let b:showtime.data = a:data
   let b:showtime.saved_state = s:save_state()
   set laststatus=0 showtabline=0 noshowcmd
-  if has_key(a:data, 'font')
-    let &guifont = a:data.font
-  endif
   setlocal buftype=nofile readonly
   setlocal nonumber norelativenumber wrap nolist cmdheight=1
   setlocal nocursorline nocursorcolumn colorcolumn=
@@ -84,6 +81,13 @@ function! s:action_jump(session, page)
   if cs !=# '' && cs !=# get(a:session, 'current_colorscheme', '')
     execute 'colorscheme' cs
     let a:session.current_colorscheme = cs
+  endif
+
+  let font = get(page.meta, 'font', get(data, 'font', ''))
+  if font !=# '' && font !=# get(a:session, 'current_font', '')
+    let &guifont = font
+    let a:session.current_font = font
+    set lines=100 columns=500
   endif
 
   call showtime#renderer#render(page)
