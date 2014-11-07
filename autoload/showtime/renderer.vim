@@ -47,7 +47,7 @@ function! showtime#renderer#render(page)
 endfunction
 
 function! s:height_middlize(max_height, body_height)
-  return (a:max_height - a:body_height) / 2
+  return (a:max_height - a:body_height + 1) / 2
 endfunction
 
 function! s:line_centerize(line, width)
@@ -72,7 +72,11 @@ function! s:render_segment(segment, context)
   if t == type([])
     let block = []
     for seg in a:segment
-      let lines = s:render_segment(seg, a:context) + ['']
+      let lines = []
+      if !empty(block)
+        let lines += ['']
+      endif
+      let lines += s:render_segment(seg, a:context)
       let block += lines
       let a:context.line += len(lines)
       unlet seg
