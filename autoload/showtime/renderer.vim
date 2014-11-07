@@ -6,14 +6,14 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:clear()
+function! showtime#renderer#clear()
   silent % delete _
   silent put =repeat([''], winheight(0))
+  syntax clear
 endfunction
 
 function! showtime#renderer#render(page)
-  call s:clear()
-  syntax clear
+  call showtime#renderer#clear()
   let width = winwidth(0)
   let buf_height = winheight(0)
   let height = buf_height + 1  " cmdline

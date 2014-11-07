@@ -77,6 +77,8 @@ function! s:action_jump(session, page)
   \          last < a:page ? last : a:page
   let page = data.pages[page_nr - 1]
 
+  call showtime#renderer#clear()
+
   let cs = get(page.meta, 'colorscheme', get(data, 'colorscheme', ''))
   if cs !=# '' && cs !=# get(a:session, 'current_colorscheme', '')
     execute 'colorscheme' cs
