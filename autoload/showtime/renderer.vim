@@ -15,7 +15,8 @@ function! showtime#renderer#render(page)
   call s:clear()
   syntax clear
   let width = winwidth(0)
-  let height = winheight(0)
+  let buf_height = winheight(0)
+  let height = buf_height + 1  " cmdline
   if a:page.layout ==# 'body'
     let lines = s:render_segment(a:page.segments, {'line': 1})
     let line = s:height_middlize(height, len(lines))
@@ -27,14 +28,19 @@ function! showtime#renderer#render(page)
     call setline(3, s:block_centerize(lines, width))
     let bottom = len(lines) + 2
   elseif a:page.layout ==# 'title'
-    call setline(height / 2, s:line_centerize(a:page.title, width))
-    let line = height / 2 + 2
+    let middle = height / 2
+    call setline(middle, s:line_centerize(a:page.title, width))
+    let line = middle + 2
     let lines = s:render_segment(a:page.segments, {'line': line})
     call setline(line, s:block_centerize(lines, width))
     let bottom = line + len(lines) - 1
+  elseif a:page.layout ==# 'header'
+    let middle = (height + 1) / 2
+    call setline(middle, s:line_centerize(a:page.title, width))
+    let bottom = middle
   endif
-  if bottom < height
-    silent execute (height + 1) . ',$ delete _'
+  if bottom < buf_height
+    silent execute (buf_height + 1) . ',$ delete _'
   endif
   1
   redraw

@@ -36,7 +36,7 @@ function! s:parse_page(input)
   let [segments, rest, meta] = s:parse_body(rest)
   let layout = level ==  1     ? 'title':
   \            title ==# ''    ? 'body':
-  \            empty(segments) ? 'title':
+  \            empty(segments) ? 'header':
   \                              'page'
   return [{
   \   'title': title,
