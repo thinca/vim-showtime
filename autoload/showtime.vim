@@ -57,9 +57,6 @@ function! s:make_buffer(data, page)
   " :silent is needed to avoid hit-enter-prompt.
   silent setlocal filetype=showtime
 
-  if get(a:data, 'colorscheme', '') !=# ''
-    execute 'colorscheme' a:data.colorscheme
-  endif
   call s:hide_cursor()
   call s:action_jump(b:showtime, a:page)
 endfunction
@@ -79,13 +76,22 @@ endfunction
 function! s:action_jump(session, page)
   let data = a:session.data
   let last = len(data.pages)
-  let page = a:page <= 0 ? 1 :
+  let page_nr = a:page <= 0 ? 1 :
   \          last < a:page ? last : a:page
-  call showtime#renderer#render(data.pages[page - 1])
-  if has_key(data, 'title')
-    let &titlestring = printf('%s [%d/%d]', data.title, page, last)
+  let page = data.pages[page_nr - 1]
+
+  let cs = get(page.meta, 'colorscheme', get(data, 'colorscheme', ''))
+  if cs !=# '' && cs !=# get(a:session, 'current_colorscheme', '')
+    execute 'colorscheme' cs
+    let a:session.current_colorscheme = cs
   endif
-  let a:session.current_page = page
+
+  call showtime#renderer#render(page)
+
+  if has_key(data, 'title')
+    let &titlestring = printf('%s [%d/%d]', data.title, page_nr, last)
+  endif
+  let a:session.current_page = page_nr
 endfunction
 function! s:action_quit(session)
   call s:restore_state(a:session.saved_state)
