@@ -136,6 +136,10 @@ decorator
 ==============================================================================
 CHANGELOG					*showtime-changelog*
 
+1.2	2014-11-08
+	- Add metadata syntax for Markdown.
+	- Colorscheme and font can be changed for every page.
+
 1.1	2014-10-17
 	- Add resume feature(|:ShowtimeResume|).
 	- Add |<Plug>(showtime-redraw)|.
