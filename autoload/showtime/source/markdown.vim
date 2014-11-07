@@ -81,7 +81,7 @@ function! s:parse_body(input)
   return [segments, rest, meta]
 endfunction
 function! s:parse_metadata(input, meta)
-  let matched = matchlist(a:input, '^<!--!\(.\{-}\)\n\s*-->\s*\(.*\)')
+  let matched = matchlist(a:input, '^<!--!\(.\{-}\)\n\s*-->\_s*\(.*\)')
   if empty(matched)
     return a:input
   endif
