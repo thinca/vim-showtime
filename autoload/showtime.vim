@@ -136,7 +136,7 @@ function! s:save_state()
   return {
   \   'options': options,
   \   'cursor': s:current_cursor(),
-  \   'colorscheme': g:colors_name,
+  \   'colorscheme': get(g:, 'colors_name', ''),
   \ }
 endfunction
 function! s:restore_state(state)
@@ -149,7 +149,9 @@ function! s:restore_state(state)
   if has_key(a:state, 'cursor')
     execute a:state.cursor
   endif
-  if has_key(a:state, 'colorscheme') && a:state.colorscheme !=# g:colors_name
+  if has_key(a:state, 'colorscheme') &&
+  \   a:state.colorscheme !=# '' &&
+  \   a:state.colorscheme !=# get(g:, 'colors_name', '')
     execute 'colorscheme' a:state.colorscheme
   endif
 endfunction
