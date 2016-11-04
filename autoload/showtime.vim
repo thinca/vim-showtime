@@ -48,6 +48,7 @@ function! s:make_buffer(data, page)
   let b:showtime.data = a:data
   let b:showtime.saved_state = s:save_state()
   set laststatus=0 showtabline=0 noshowcmd
+  set nolist showbreak= noshowmode
   setlocal buftype=nofile readonly
   setlocal nonumber norelativenumber wrap nolist cmdheight=1
   setlocal nocursorline nocursorcolumn colorcolumn=
@@ -128,7 +129,7 @@ function! s:save_state()
   let options = {}
   for option in [
   \   'showtabline', 'laststatus',
-  \   'showcmd', 'titlestring',
+  \   'showcmd', 'showbreak', 'showmode', 'titlestring',
   \   'guifont', 'lines', 'columns',
   \ ]
     let options[option] = eval('&' . option)
