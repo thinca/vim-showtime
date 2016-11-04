@@ -103,14 +103,14 @@ function! s:decorator.code(segment, context)
   execute printf('syntax include @showtimeCode_%s syntax/%s.vim',
   \              ft, ft)
   execute printf('syntax region showtimeCode '
-  \ . 'start="\%%%dl" end="\%%%dl" '
+  \ . 'start="\%%%dl" end="\%%%dl$" '
   \ . 'contains=@showtimeCode_%s',
   \   a:context.line, a:context.line + a:context.height, ft)
 endfunction
 function! s:decorator.block(segment, context)
   highlight link showtimeBlock Constant
   execute printf('syntax region showtimeBlock '
-  \ . 'start="\%%%dl" end="\%%%dl"',
+  \ . 'start="\%%%dl" end="\%%%dl$"',
   \   a:context.line, a:context.line + a:context.height)
 endfunction
 
