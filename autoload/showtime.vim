@@ -87,11 +87,13 @@ function! s:action_jump(session, page)
     call s:hide_cursor()
   endif
 
-  let font = get(page.meta, 'font', get(data, 'font', ''))
-  if font !=# '' && font !=# get(a:session, 'current_font', '')
-    let &guifont = font
-    let a:session.current_font = font
-    set lines=100 columns=500
+  if exists('+guifont')
+    let font = get(page.meta, 'font', get(data, 'font', ''))
+    if font !=# '' && font !=# get(a:session, 'current_font', '')
+      let &guifont = font
+      let a:session.current_font = font
+      set lines=100 columns=500
+    endif
   endif
 
   call showtime#renderer#render(page)
