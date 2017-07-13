@@ -99,13 +99,17 @@ endfunction
 let s:decorator = {}
 function! s:decorator.code(segment, context)
   let ft = a:segment.param.filetype
-  unlet! b:current_syntax
-  execute printf('syntax include @showtimeCode_%s syntax/%s.vim',
-  \              ft, ft)
+  if ft ==# ''
+    let contains = ''
+  else
+    unlet! b:current_syntax
+    execute printf('syntax include @showtimeCode_%s syntax/%s.vim',
+    \              ft, ft)
+    let contains = printf(' contains=@showtimeCode_%s', ft)
+  endif
   execute printf('syntax region showtimeCode '
-  \ . 'start="\%%%dl" end="\%%%dl$" '
-  \ . 'contains=@showtimeCode_%s',
-  \   a:context.line, a:context.line + a:context.height, ft)
+  \ . 'start="\%%%dl" end="\%%%dl$"%s',
+  \   a:context.line, a:context.line + a:context.height, contains)
 endfunction
 function! s:decorator.block(segment, context)
   highlight link showtimeBlock Constant
