@@ -32,10 +32,10 @@ function! showtime#load(file)
 endfunction
 
 function! showtime#action(action, ...)
-  if !exists('b:showtime')
+  if !exists('b:showtime_session')
     return
   endif
-  return call('s:action_' . a:action, [b:showtime] + a:000)
+  return call('s:action_' . a:action, [b:showtime_session] + a:000)
 endfunction
 
 function! s:make_buffer(data, page)
@@ -44,9 +44,9 @@ function! s:make_buffer(data, page)
   augroup plugin-showtime
     autocmd! TabLeave <buffer> ShowtimeEnd
   augroup END
-  let b:showtime = {}
-  let b:showtime.data = a:data
-  let b:showtime.saved_state = s:save_state()
+  let b:showtime_session = {}
+  let b:showtime_session.data = a:data
+  let b:showtime_session.saved_state = s:save_state()
   set laststatus=0 showtabline=0 noshowcmd
   set nolist showbreak= noshowmode
   setlocal buftype=nofile readonly
@@ -56,7 +56,7 @@ function! s:make_buffer(data, page)
   silent setlocal filetype=showtime
 
   call s:hide_cursor()
-  call s:action_jump(b:showtime, a:page)
+  call s:action_jump(b:showtime_session, a:page)
 endfunction
 
 function! s:action_next(session, count)
