@@ -44,6 +44,8 @@ COMMANDS					*showtime-commands*
 :ShowtimeResume					*:ShowtimeResume*
 	Resumes the previous presentation.
 	Starts at the last shown page.
+	When there is no previous presentation, this works like
+	|:ShowtimeStart|.
 
 ------------------------------------------------------------------------------
 FUNCTIONS					*showtime-functions*

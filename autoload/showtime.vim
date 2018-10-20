@@ -15,10 +15,11 @@ function! showtime#start(...)
 endfunction
 
 function! showtime#resume()
-  if !exists('s:resume_info')
-    throw 'showtime: No resume info'
+  if exists('s:resume_info')
+    call showtime#start(s:resume_info.filename, s:resume_info.page)
+  else
+    call showtime#start()
   endif
-  call showtime#start(s:resume_info.filename, s:resume_info.page)
 endfunction
 
 function! showtime#load(file)
