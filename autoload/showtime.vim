@@ -8,8 +8,15 @@ set cpo&vim
 
 function! showtime#start(...)
   let file = a:0 && a:1 =~# '\S' ? a:1 : expand('%:p')
-  let data = showtime#load(file)
-  call s:validate(data)
+  try
+    let data = showtime#load(file)
+    call s:validate(data)
+  catch /^showtime:/
+    echohl ErrorMsg
+    echomsg v:exception
+    echohl None
+    return
+  endtry
   let page = 2 <= a:0 ? a:2 : 1
   call s:make_buffer(data, page)
 endfunction
