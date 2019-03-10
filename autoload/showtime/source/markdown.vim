@@ -91,8 +91,11 @@ function! s:parse_metadata(input, meta)
   return rest
 endfunction
 function! s:parse_code_block(input)
-  let [filetype, code, body] =
-  \   matchlist(a:input, '\v^```\s*(\w*)\s*\n(.{-})\n```%(\n(.*))?')[1 : 3]
+  let result = matchlist(a:input, '\v^```\s*(\w*)\s*\n(.{-})```%(\n(.*))?')
+  if result == []
+    throw 'showtime: markdown: Parsing of code block failed: ' . a:input
+  endif
+  let [filetype, code, body] = result[1 : 3]
   return [{
   \   'decorator': 'code',
   \   'content': code,
