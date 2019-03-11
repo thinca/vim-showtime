@@ -92,6 +92,7 @@ function! s:action_jump(session, page)
   if cs !=# '' && cs !=# get(a:session, 'current_colorscheme', '')
     execute 'colorscheme' cs
     let a:session.current_colorscheme = cs
+    let a:session.saved_state.cursor = s:current_cursor()
     call s:hide_cursor()
   endif
 
