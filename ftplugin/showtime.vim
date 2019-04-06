@@ -1,8 +1,3 @@
-" FileType plugin for showtime
-" Version: 1.2
-" Author : thinca <thinca+vim@gmail.com>
-" License: zlib License
-
 if exists('b:did_ftplugin')
   finish
 endif

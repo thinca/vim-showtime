@@ -1,8 +1,3 @@
-" It's showtime!
-" Version: 1.2
-" Author : thinca <thinca+vim@gmail.com>
-" License: zlib License
-
 let s:save_cpo = &cpo
 set cpo&vim
 
