@@ -1,6 +1,3 @@
-let s:save_cpo = &cpo
-set cpo&vim
-
 let s:source = {
 \   'accept': ['.md', '.mkd', '.markdown'],
 \ }
@@ -123,6 +120,3 @@ endfunction
 function! showtime#source#markdown#load()
   return s:source
 endfunction
-
-let &cpo = s:save_cpo
-unlet s:save_cpo

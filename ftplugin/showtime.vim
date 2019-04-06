@@ -3,9 +3,6 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
-let s:save_cpo = &cpo
-set cpo&vim
-
 nnoremap <silent> <buffer> <Plug>(showtime-next)
 \                 :<C-u>call showtime#action('next', v:count1)<CR>
 nnoremap <silent> <buffer> <Plug>(showtime-prev)
@@ -40,6 +37,3 @@ nmap <buffer> <nowait> s <Plug>(showtime-cursor)
 nmap <buffer> <nowait> <C-l> <Plug>(showtime-redraw)
 
 command! -buffer ShowtimeEnd call showtime#action('quit')
-
-let &cpo = s:save_cpo
-unlet s:save_cpo

@@ -1,6 +1,3 @@
-let s:save_cpo = &cpo
-set cpo&vim
-
 function! showtime#start(...)
   let file = a:0 && a:1 =~# '\S' ? a:1 : expand('%:p')
   try
@@ -185,6 +182,3 @@ endfunction
 function! s:validate(data)
   " TODO
 endfunction
-
-let &cpo = s:save_cpo
-unlet s:save_cpo

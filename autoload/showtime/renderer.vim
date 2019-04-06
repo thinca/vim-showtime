@@ -1,6 +1,3 @@
-let s:save_cpo = &cpo
-set cpo&vim
-
 function! showtime#renderer#clear()
   silent % delete _
   silent put =repeat([''], winheight(0))
@@ -112,6 +109,3 @@ function! s:decorator.block(segment, context)
   \ . 'start="\%%%dl" end="\%%%dl$"',
   \   a:context.line, a:context.line + a:context.height)
 endfunction
-
-let &cpo = s:save_cpo
-unlet s:save_cpo
