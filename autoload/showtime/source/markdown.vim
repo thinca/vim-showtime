@@ -2,7 +2,7 @@ let s:source = {
 \   'accept': ['.md', '.mkd', '.markdown'],
 \ }
 
-function! s:source.import(content)
+function s:source.import(content) abort
   let data = {'pages': []}
   let [header, rest] = s:parse_header(a:content)
   call extend(data, header, 'keep')
@@ -16,14 +16,14 @@ function! s:source.import(content)
   return data
 endfunction
 
-function! s:parse_header(input)
+function s:parse_header(input) abort
   " Temporary specs.
   let rest = substitute(a:input, '^\s*', '', '')
   let data = {}
   let rest = s:parse_metadata(rest, data)
   return [data, matchstr(rest, '^\_s*\zs.*')]
 endfunction
-function! s:parse_page(input)
+function s:parse_page(input) abort
   let [level, title, rest] = s:parse_title(a:input)
   let [segments, rest, meta] = s:parse_body(rest)
   let layout = level ==  1     ? 'title':
@@ -37,7 +37,7 @@ function! s:parse_page(input)
   \   'segments': segments,
   \ }, rest]
 endfunction
-function! s:parse_title(input)
+function s:parse_title(input) abort
   let br = "[^\r\n]"
   let pat = '^\(#\+\s*' . br . '*\)\n*\(.*\)$'
   let list = matchlist(a:input, pat)
@@ -49,7 +49,7 @@ function! s:parse_title(input)
   let title = matchstr(title, '^#*\s*\zs.\{-}\ze\s*$')
   return [level, title, rest]
 endfunction
-function! s:parse_body(input)
+function s:parse_body(input) abort
   let segments = []
   let rest = a:input
   let meta = {}
@@ -72,7 +72,7 @@ function! s:parse_body(input)
   endwhile
   return [segments, rest, meta]
 endfunction
-function! s:parse_metadata(input, meta)
+function s:parse_metadata(input, meta) abort
   let matched = matchlist(a:input, '^<!--!\(.\{-}\)\n\s*-->\_s*\(.*\)')
   if empty(matched)
     return a:input
@@ -82,7 +82,7 @@ function! s:parse_metadata(input, meta)
   call extend(a:meta, meta)
   return rest
 endfunction
-function! s:parse_code_block(input)
+function s:parse_code_block(input) abort
   let result = matchlist(a:input, '\v^```\s*(\w*)\s*\n(.{-})```%(\n(.*))?')
   if result == []
     throw 'showtime: markdown: Parsing of code block failed: ' . a:input
@@ -96,7 +96,7 @@ function! s:parse_code_block(input)
   \   },
   \ }, body]
 endfunction
-function! s:parse_block(input)
+function s:parse_block(input) abort
   let block = ''
   let body = a:input
   while body =~# '\v^%( {,4}\n|    |\t)'
@@ -108,7 +108,7 @@ function! s:parse_block(input)
   \   'content': matchstr(block, '^.\{-}\ze\n*$'),
   \ }, body]
 endfunction
-function! s:parse_text(input)
+function s:parse_text(input) abort
   let seg = matchstr(a:input, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
   let rest = matchstr(a:input[len(seg) :], '^\n*\zs.*')
   let seg = substitute(seg, '<!--\_.\{-}-->', '', 'g')
@@ -117,6 +117,6 @@ function! s:parse_text(input)
   return [seg, rest]
 endfunction
 
-function! showtime#source#markdown#load()
+function showtime#source#markdown#load() abort
   return s:source
 endfunction

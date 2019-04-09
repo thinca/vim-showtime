@@ -1,10 +1,10 @@
-function! showtime#renderer#clear()
+function showtime#renderer#clear() abort
   silent % delete _
   silent put =repeat([''], winheight(0))
   syntax clear
 endfunction
 
-function! showtime#renderer#render(page)
+function showtime#renderer#render(page) abort
   call showtime#renderer#clear()
   let width = winwidth(0)
   let buf_height = winheight(0)
@@ -38,28 +38,28 @@ function! showtime#renderer#render(page)
   redraw
 endfunction
 
-function! s:height_middlize(max_height, body_height)
+function s:height_middlize(max_height, body_height) abort
   return (a:max_height - a:body_height + 1) / 2
 endfunction
 
-function! s:line_centerize(line, width)
+function s:line_centerize(line, width) abort
   return s:centerize_padding(a:width, strwidth(a:line)) . a:line
 endfunction
 
-function! s:block_centerize(lines, width)
+function s:block_centerize(lines, width) abort
   let left = s:centerize_padding(a:width, s:block_width(a:lines))
   return map(a:lines, 'left . v:val')
 endfunction
 
-function! s:centerize_padding(max_width, body_width)
+function s:centerize_padding(max_width, body_width) abort
   return repeat(' ', (a:max_width - a:body_width) / 2)
 endfunction
 
-function! s:block_width(lines)
+function s:block_width(lines) abort
   return max(map(copy(a:lines), 'strwidth(v:val)'))
 endfunction
 
-function! s:render_segment(segment, context)
+function s:render_segment(segment, context) abort
   let t = type(a:segment)
   if t == type([])
     let block = []
@@ -89,7 +89,7 @@ function! s:render_segment(segment, context)
 endfunction
 
 let s:decorator = {}
-function! s:decorator.code(segment, context)
+function s:decorator.code(segment, context) abort
   let ft = a:segment.param.filetype
   if ft ==# ''
     let contains = ''
@@ -103,7 +103,7 @@ function! s:decorator.code(segment, context)
   \ . 'start="\%%%dl" end="\%%%dl$"%s',
   \   a:context.line, a:context.line + a:context.height, contains)
 endfunction
-function! s:decorator.block(segment, context)
+function s:decorator.block(segment, context) abort
   highlight link showtimeBlock Constant
   execute printf('syntax region showtimeBlock '
   \ . 'start="\%%%dl" end="\%%%dl$"',

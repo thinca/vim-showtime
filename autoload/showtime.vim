@@ -1,4 +1,4 @@
-function! showtime#start(...)
+function showtime#start(...) abort
   let file = a:0 && a:1 =~# '\S' ? a:1 : expand('%:p')
   try
     let data = showtime#load(file)
@@ -13,7 +13,7 @@ function! showtime#start(...)
   call s:make_buffer(data, page)
 endfunction
 
-function! showtime#resume()
+function showtime#resume() abort
   if exists('s:resume_info')
     call showtime#start(s:resume_info.filename, s:resume_info.page)
   else
@@ -21,7 +21,7 @@ function! showtime#resume()
   endif
 endfunction
 
-function! showtime#load(file)
+function showtime#load(file) abort
   if !filereadable(a:file)
     throw "showtime: File can't read: " . a:file
   endif
@@ -31,14 +31,14 @@ function! showtime#load(file)
   return data
 endfunction
 
-function! showtime#action(action, ...)
+function showtime#action(action, ...) abort
   if !exists('b:showtime_session')
     return
   endif
   return call('s:action_' . a:action, [b:showtime_session] + a:000)
 endfunction
 
-function! s:make_buffer(data, page)
+function s:make_buffer(data, page) abort
   tabnew `='[showtime]'`
   silent execute 'tabmove' (tabpagenr() - 2)
   augroup plugin-showtime
@@ -59,19 +59,19 @@ function! s:make_buffer(data, page)
   call s:action_jump(b:showtime_session, a:page)
 endfunction
 
-function! s:action_next(session, count)
+function s:action_next(session, count) abort
   return s:action_jump(a:session, a:session.current_page + a:count)
 endfunction
-function! s:action_prev(session, count)
+function s:action_prev(session, count) abort
   return s:action_jump(a:session, a:session.current_page - a:count)
 endfunction
-function! s:action_first(session)
+function s:action_first(session) abort
   return s:action_jump(a:session, 1)
 endfunction
-function! s:action_last(session)
+function s:action_last(session) abort
   return s:action_jump(a:session, len(a:session.data.pages))
 endfunction
-function! s:action_jump(session, page)
+function s:action_jump(session, page) abort
   let data = a:session.data
   let last = len(data.pages)
   let page_nr = a:page <= 0 ? 1 :
@@ -104,7 +104,7 @@ function! s:action_jump(session, page)
   endif
   let a:session.current_page = page_nr
 endfunction
-function! s:action_quit(session)
+function s:action_quit(session) abort
   call s:restore_state(a:session.saved_state)
   let s:resume_info = {
   \   'filename': a:session.data.filename,
@@ -112,7 +112,7 @@ function! s:action_quit(session)
   \ }
   tabclose
 endfunction
-function! s:action_cursor(session)
+function s:action_cursor(session) abort
   if !has_key(a:session, 'saved_state')
     return
   endif
@@ -124,11 +124,11 @@ function! s:action_cursor(session)
     call s:hide_cursor()
   endif
 endfunction
-function! s:action_redraw(session)
+function s:action_redraw(session) abort
   return s:action_jump(a:session, a:session.current_page)
 endfunction
 
-function! s:save_state()
+function s:save_state() abort
   let options = {}
   for option in [
   \   'showtabline', 'laststatus',
@@ -144,7 +144,7 @@ function! s:save_state()
   \   'colorscheme': get(g:, 'colors_name', ''),
   \ }
 endfunction
-function! s:restore_state(state)
+function s:restore_state(state) abort
   for [option, value] in items(a:state.options)
     let optname = '&' . option
     if eval(optname) isnot value
@@ -163,7 +163,7 @@ function! s:restore_state(state)
 endfunction
 
 
-function! s:current_cursor()
+function s:current_cursor() abort
   redir => cursor
   silent! highlight Cursor
   redir END
@@ -173,12 +173,12 @@ function! s:current_cursor()
   return 'highlight Cursor ' .
   \      substitute(matchstr(cursor, 'xxx\zs.*'), "\n", ' ', 'g')
 endfunction
-function! s:hide_cursor()
+function s:hide_cursor() abort
   highlight Cursor ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 endfunction
 
 
 
-function! s:validate(data)
+function s:validate(data) abort
   " TODO
 endfunction
