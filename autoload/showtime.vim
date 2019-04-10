@@ -88,7 +88,7 @@ function s:action_jump(session, page) abort
     call s:hide_cursor()
   endif
 
-  if exists('+guifont')
+  if has('gui_running') && exists('+guifont')
     let font = get(page.meta, 'font', get(data, 'font', ''))
     if font !=# '' && font !=# get(a:session, 'current_font', '')
       let &guifont = font
