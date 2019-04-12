@@ -111,6 +111,7 @@ endfunction
 function s:parse_text(input) abort
   let seg = matchstr(a:input, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
   let rest = matchstr(a:input[len(seg) :], '^\n*\zs.*')
+  let seg = substitute(seg, '^\n*', '', 'g')
   let seg = substitute(seg, '<!--\_.\{-}-->', '', 'g')
   let seg = substitute(seg, '`\(.\{-}\)`', '\1', 'g')
   let seg = substitute(seg, '\[\(.\{-}\)\](.\{-})', '\1', 'g')
