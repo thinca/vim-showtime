@@ -34,7 +34,7 @@ function showtime#renderer#render(page) abort
   if bottom < buf_height
     silent execute (buf_height + 1) . ',$ delete _'
   endif
-  1
+  call cursor(1, 1)
   redraw
 endfunction
 
