@@ -68,7 +68,6 @@ function s:parse_body(input) abort
       let [seg, rest] = s:parse_text(rest)
     endif
     let segments += [seg]
-    unlet seg
   endwhile
   return [segments, rest, meta]
 endfunction
@@ -109,13 +108,79 @@ function s:parse_block(input) abort
   \ }, body]
 endfunction
 function s:parse_text(input) abort
-  let seg = matchstr(a:input, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
-  let rest = matchstr(a:input[len(seg) :], '^\n*\zs.*')
-  let seg = substitute(seg, '^\n*', '', 'g')
-  let seg = substitute(seg, '<!--\_.\{-}-->', '', 'g')
-  let seg = substitute(seg, '`\(.\{-}\)`', '\1', 'g')
-  let seg = substitute(seg, '\[\(.\{-}\)\](.\{-})', '\1', 'g')
-  return [seg, rest]
+  let text = matchstr(a:input, '^.\{-}\ze\%(\n\n\|\n\s*#\|$\)')
+  let rest = matchstr(a:input[len(text) :], '^\n*\zs.*')
+  let text = substitute(text, '^\n*', '', 'g')
+  let text = substitute(text, '<!--\_.\{-}-->', '', 'g')
+  let text = substitute(text, '\[\(.\{-}\)\](.\{-})', '\1', 'g')
+  let segs = s:extract_decorations(text)
+  return [segs, rest]
+endfunction
+function s:extract_decorations(text) abort
+  let text = a:text
+  let segs = []
+  while 1
+    let result = matchlist(text, '\v^(.{-}%(^|\s))(%(`|\*\S|_\S|\~\S).*)')
+    if empty(result)
+      let segs += [text]
+      break
+    endif
+    let segs += [result[1]]
+    let text = result[2]
+    if text[0] ==# '`'
+      let open = matchstr(text, '^`\+')
+      let start = len(open)
+      let end = stridx(text, open, start)
+      if end < 0
+        let segs += [open]
+        let text = text[start :]
+      else
+        let segs += [{
+        \   'content': text[start : end - 1],
+        \   'decorator': 'highlight',
+        \   'param': {'link': 'Constant'},
+        \ }]
+        let text = text[end + start :]
+      endif
+    elseif text[0] ==# '*' || text[0] ==# '_'
+      let open = matchstr(text, '^\([*_]\)\1\{0,2}\ze\S')
+      let start = len(open)
+      let end = stridx(text, open, start)
+      if end < 0
+        let segs += [open]
+        let text = text[start :]
+      else
+        let attrs =
+        \   start == 1 ? ['italic'] :
+        \   start == 2 ? ['bold'] :
+        \   start == 3 ? ['italic', 'bold'] : ['bold']
+        let segs += [{
+        \   'content': text[start : end - 1],
+        \   'decorator': 'highlight',
+        \   'param': {'attrs': attrs},
+        \ }]
+        let text = text[end + start :]
+      endif
+    elseif text[0] ==# '~'
+      let open = matchstr(text, '^\~\+\ze\S')
+      let start = len(open)
+      let end = stridx(text, open, start)
+      if end < 0
+        let segs += [open]
+        let text = text[start :]
+      else
+        let segs += [{
+        \   'content': text[start : end - 1],
+        \   'decorator': 'highlight',
+        \   'param': {'attrs': ['strikethrough']},
+        \ }]
+        let text = text[end + start :]
+      endif
+    else
+      break
+    endif
+  endwhile
+  return segs
 endfunction
 
 function showtime#source#markdown#load() abort
