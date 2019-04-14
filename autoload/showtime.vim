@@ -133,7 +133,7 @@ function s:save_state() abort
   for option in [
   \   'showtabline', 'laststatus',
   \   'showcmd', 'showbreak', 'showmode', 'titlestring',
-  \   'guifont', 'lines', 'columns',
+  \   'guifont', 'lines', 'columns', 'ruler',
   \ ]
     let options[option] = eval('&' . option)
   endfor
