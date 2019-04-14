@@ -48,7 +48,7 @@ function s:make_buffer(data, page) abort
   let b:showtime_session.data = a:data
   let b:showtime_session.saved_state = s:save_state()
   set laststatus=0 showtabline=0 noshowcmd
-  set nolist showbreak= noshowmode
+  set nolist showbreak= noshowmode noruler
   setlocal buftype=nofile readonly
   setlocal nonumber norelativenumber wrap nolist cmdheight=1
   setlocal nocursorline nocursorcolumn colorcolumn=
