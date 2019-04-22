@@ -92,6 +92,9 @@ function s:action_jump(session, page) abort
     let font = get(page.meta, 'font', get(data, 'font', ''))
     if font !=# '' && font !=# get(a:session, 'current_font', '')
       let &guifont = font
+      if exists('+guifont')
+        let &guifontwide = font
+      endif
       let a:session.current_font = font
       set lines=100 columns=500
     endif
@@ -133,7 +136,7 @@ function s:save_state() abort
   for option in [
   \   'showtabline', 'laststatus',
   \   'showcmd', 'showbreak', 'showmode', 'titlestring',
-  \   'guifont', 'lines', 'columns', 'ruler',
+  \   'guifont', 'guifontwide', 'lines', 'columns', 'ruler',
   \ ]
     let options[option] = eval('&' . option)
   endfor
